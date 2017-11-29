@@ -12,7 +12,7 @@ public class AddeditDependencyPresenter implements AddeditDependencyContract.Pre
     private AddeditDependecyInteractor interactor;
 
 
-    public AddeditDependencyPresenter (AddeditDependencyContract.View view) {
+    public AddeditDependencyPresenter(AddeditDependencyContract.View view) {
         this.view = view;
         interactor = new AddeditDependecyInteractor();
     }
@@ -25,6 +25,11 @@ public class AddeditDependencyPresenter implements AddeditDependencyContract.Pre
 
     @Override
     public void addDependency(String nameDep, String shortNameDep, String descriptionDep) {
+    }
+
+    @Override
+    public void changeDependency(String shortNameDep, String DescriptionDep) {
+
     }
 
     @Override

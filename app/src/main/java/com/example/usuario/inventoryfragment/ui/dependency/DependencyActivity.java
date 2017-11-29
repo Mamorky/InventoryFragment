@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.example.usuario.inventoryfragment.R;
-import com.example.usuario.inventoryfragment.data.db.model.Dependency;
-import com.example.usuario.inventoryfragment.data.db.repository.DependencyRepository;
 import com.example.usuario.inventoryfragment.ui.base.BaseActivity;
 import com.example.usuario.inventoryfragment.ui.dependency.presenters.AddeditDependencyPresenter;
 import com.example.usuario.inventoryfragment.ui.dependency.presenters.ListDependencyPresenter;
@@ -68,5 +66,21 @@ public class DependencyActivity extends BaseActivity implements ListDependencyFr
         mAddeditPresenter = new AddeditDependencyPresenter(mAddeditDependency);
 
         mListDependency.setPresenter(mListPresenter);
+    }
+
+    @Override
+    public void addNewDependency(Bundle bundle) {
+        mAddeditDependency = (AddeditDependencyFragment) getSupportFragmentManager().
+                findFragmentByTag(AddeditDependencyFragment.TAG);
+
+        if (mAddeditDependency == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            mAddeditDependency = AddeditDependencyFragment.newInstance(null);
+            transaction.addToBackStack(null);
+            transaction.replace(android.R.id.content, mAddeditDependency, AddeditDependencyFragment.TAG).commit();
+        }
+
+        mAddeditPresenter = new AddeditDependencyPresenter(mAddeditDependency);
+        mAddeditDependency.setPresenter(mAddeditPresenter);
     }
 }

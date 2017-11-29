@@ -1,7 +1,6 @@
 package com.example.usuario.inventoryfragment.ui.dependency;
 
 import com.example.usuario.inventoryfragment.data.db.model.Dependency;
-import com.example.usuario.inventoryfragment.data.db.repository.DependencyRepository;
 
 import java.util.List;
 
@@ -11,12 +10,14 @@ import java.util.List;
 
 public interface ListDependencyInteractor {
 
-    public ListDependencyInteractor.OnLoadFinishedListerner listener;
+    void loadDependency();
+
+    void showDependencies(List<Dependency> list);
 
     interface OnLoadFinishedListerner{
-        void onSuccess();
-        void loadDependency();
+        void onSuccess(List<Dependency> list);
     }
 
     public void getDependency();
+    void addNewDEpendency(String name,String shortname,String desc);
 }

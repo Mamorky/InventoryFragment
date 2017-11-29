@@ -14,21 +14,26 @@ import java.util.List;
 public class ListDependencyPresenter implements ListDependencyContract.Presenter,
         ListDependencyInteractor.OnLoadFinishedListerner{
     ListDependencyContract.View view;
+    ListDependencyInteractorImp interactor;
     //private static int TYPE_FILTER;
-
-    private ListDependencyInteractor listDependencyInteractor;
+    ;
     public ListDependencyPresenter(ListDependencyContract.View view) {
         this.view = view;
-        this.listDependencyInteractor = new ListDependencyInteractorImp(this);
+        this.interactor = new ListDependencyInteractorImp(this);
     }
 
     @Override
-    public void onSuccess() {
-        listDependencyInteractor.loadDependency();
+    public void onSuccess(List<Dependency> list) {
+        interactor.showDependencies(list);
     }
 
     @Override
     public void loadDependency() {
-        listDependencyInteractor.getDependency();
+        interactor.loadDependency();
+    }
+
+    @Override
+    public void addNewDependency(String name, String shortname, String desc) {
+        interactor.addNewDEpendency(name,shortname,desc);
     }
 }

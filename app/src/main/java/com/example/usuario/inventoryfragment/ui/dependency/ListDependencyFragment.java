@@ -2,6 +2,7 @@ package com.example.usuario.inventoryfragment.ui.dependency;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,11 +11,13 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.example.usuario.inventoryfragment.R;
 import com.example.usuario.inventoryfragment.adapters.DependencyAdapter;
 import com.example.usuario.inventoryfragment.data.db.model.Dependency;
 import com.example.usuario.inventoryfragment.ui.dependency.contracts.ListDependencyContract;
+import com.example.usuario.inventoryfragment.ui.dependency.presenters.ListDependencyPresenter;
 
 import java.util.List;
 
@@ -26,12 +29,18 @@ public class ListDependencyFragment extends ListFragment implements ListDependen
     private ListDependencyContract.Presenter mListPresenter;
     private ListDependencyListener mCallback;
     private DependencyAdapter adapter;
-
+    private ListDependencyPresenter presenter;
     private FloatingActionButton fabAdd;
+
+    @Override
+    public void showDependencies(List<Dependency> list) {
+        adapter.clear();
+        adapter.addAll(list);
+    }
 
 
     interface ListDependencyListener {
-        void addNewDependency();
+        void addNewDependency(Bundle bundle);
     }
 
 
@@ -44,12 +53,16 @@ public class ListDependencyFragment extends ListFragment implements ListDependen
         return listDependencyFragment;
     }
 
+    public ListDependencyFragment(){
 
-    public ListDependencyFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         this.adapter = new DependencyAdapter(getActivity());
         setRetainInstance(true);
     }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -71,10 +84,13 @@ public class ListDependencyFragment extends ListFragment implements ListDependen
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.addNewDependency();
+                mCallback.addNewDependency(null);
             }
         });
-        mListPresenter.loadDependency();
+
+        presenter = new ListDependencyPresenter(this);
+        presenter.loadDependency();
+
         return root;
     }
 
@@ -83,17 +99,19 @@ public class ListDependencyFragment extends ListFragment implements ListDependen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setListAdapter(adapter);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Dependency.TAG,(Dependency)parent.getItemAtPosition(position));
+                mCallback.addNewDependency(bundle);
+            }
+        });
     }
 
 
     @Override
     public void setPresenter(ListDependencyContract.Presenter presenter) {
         mListPresenter = presenter;
-    }
-
-    public void showDependency(List<Dependency> list)
-    {
-        adapter.clear();
-        adapter.addAll(list);
     }
 }

@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.usuario.inventoryfragment.R;
+import com.example.usuario.inventoryfragment.data.db.model.Dependency;
 import com.example.usuario.inventoryfragment.ui.dependency.contracts.AddeditDependencyContract;
+import com.example.usuario.inventoryfragment.ui.utils.AddEdit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,8 +27,11 @@ public class AddeditDependencyFragment extends Fragment implements AddeditDepend
     TextInputLayout tilname,tilshortname,tildescription;
     EditText edtname,edtShortName,edtDesc;
     AddeditDependencyListener callback;
+    public static AddEdit mode;
+    public static Dependency dependency;
 
     interface  AddeditDependencyListener{
+        void addNewDependency();
         void goBack();
     }
 
@@ -34,8 +39,12 @@ public class AddeditDependencyFragment extends Fragment implements AddeditDepend
     public static AddeditDependencyFragment newInstance(Bundle bundle) {
         AddeditDependencyFragment addeditDependencyFragment = new AddeditDependencyFragment();
 
-        if (bundle != null)
+        mode = new AddEdit();
+        if (bundle != null){
+            mode = new AddEdit(AddEdit.EDIT_MODE);
             addeditDependencyFragment.setArguments(bundle);
+            dependency = (Dependency) bundle.get(Dependency.TAG);
+        }
 
         return addeditDependencyFragment;
     }
@@ -49,6 +58,13 @@ public class AddeditDependencyFragment extends Fragment implements AddeditDepend
         edtShortName = (EditText) root.findViewById(R.id.edt_dependency_sortname);
         edtDesc = (EditText) root.findViewById(R.id.edt_description);
         tilname = (TextInputLayout) root.findViewById(R.id.til_dependency_name);
+
+        if(mode.mode == AddEdit.EDIT_MODE){
+            edtname.setEnabled(false);
+            edtShortName.setEnabled(false);
+            edtname.setText(dependency.getName());
+            edtShortName.setText(dependency.getShortname());
+        }
 
         edtname.addTextChangedListener(new TextWatcher() {
             @Override
@@ -66,14 +82,21 @@ public class AddeditDependencyFragment extends Fragment implements AddeditDepend
 
             }
         });
+
         tilshortname = (TextInputLayout) root.findViewById(R.id.til_dependency_sortname);
         tildescription = (TextInputLayout) root.findViewById(R.id.til_dependency_description);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(presenter.validateDependency(tilname.getEditText().getText().toString(),tilshortname.getEditText().getText().toString(),tildescription.getEditText().getText().toString()))
-                    presenter.addDependency(edtname.getText().toString(),edtShortName.getText().toString(),edtShortName.getText().toString());
+                if (mode.mode == AddEdit.ADD_MODE) {
+                    if (presenter.validateDependency(tilname.getEditText().getText().toString(), tilshortname.getEditText().getText().toString(), tildescription.getEditText().getText().toString()))
+                        presenter.addDependency(edtname.getText().toString(), edtShortName.getText().toString(), edtShortName.getText().toString());
+                }
+                else if(mode.mode == AddEdit.EDIT_MODE){
+                    if(edtDesc.getText().toString().length() > 0)
+                        presenter.changeDependency(edtShortName.getText().toString(),edtDesc.getText().toString());
+                }
             }
         });
         if (getArguments() != null) {

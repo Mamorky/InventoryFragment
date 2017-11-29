@@ -1,16 +1,20 @@
 package com.example.usuario.inventoryfragment.data.db.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Comparator;
 
 /**
  * Clase POJO de dependencias.
  */
 
-public class Dependency implements Comparable {
+public class Dependency implements Comparable,Parcelable {
     private int _ID;
     private String name;
     private String shortname;
     private String description;
+    public static final String TAG = "dependencyTag";
 
 
     public Dependency(int _ID, String name, String shortname, String description) {
@@ -20,6 +24,25 @@ public class Dependency implements Comparable {
         this.description = description;
     }
 
+
+    protected Dependency(Parcel in) {
+        _ID = in.readInt();
+        name = in.readString();
+        shortname = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<Dependency> CREATOR = new Creator<Dependency>() {
+        @Override
+        public Dependency createFromParcel(Parcel in) {
+            return new Dependency(in);
+        }
+
+        @Override
+        public Dependency[] newArray(int size) {
+            return new Dependency[size];
+        }
+    };
 
     public int get_ID() {
         return _ID;
@@ -68,6 +91,20 @@ public class Dependency implements Comparable {
     @Override
     public int compareTo(Object o) {
         return name.compareTo(((Dependency)o).getName());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeInt(_ID);
+        dest.writeString(name);
+        dest.writeString(shortname);
+        dest.writeString(description);
     }
 
 

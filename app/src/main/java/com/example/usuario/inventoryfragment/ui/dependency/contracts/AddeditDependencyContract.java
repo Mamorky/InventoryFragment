@@ -20,6 +20,7 @@ public interface AddeditDependencyContract {
     interface Presenter {
         boolean validateDependency(String name,String shortname,String description);
         void addDependency(String nameDep,String shortNameDep,String descriptionDep);
+        void changeDependency(String shortNameDep,String DescriptionDep);
         void onDestroy();
 
     }
@@ -27,6 +28,7 @@ public interface AddeditDependencyContract {
     interface Interactor{
         boolean validateDependency(String name, String shortname, String description, onValidateFinish onValidateFinish);
         void addDependency(String nameDep,String shortNameDep,String descriptionDep);
+        void changeDependency(String shortNameDep,String DescriptionDep);
         interface onValidateFinish{
              void onEmptyName();
              void onErrorShortName();
